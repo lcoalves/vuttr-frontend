@@ -123,3 +123,26 @@ export const CardTags = styled.span`
   font-size: 16px;
   margin-right: 10px;
 `;
+
+export const ModalTitle = styled.h2`
+  margin-left: 10px;
+`;
+
+export const SubmitButton = styled.button`
+  background: #0dcb7d;
+  color: #fff;
+  font-size: 16px;
+  margin-top: 30px;
+  float: right;
+  border: 0;
+  padding: 10px 25px;
+  border-radius: 4px;
+
+  :hover {
+    background: #10b26c;
+  }
+
+  :active {
+    background: #0e995d;
+  }
+`;

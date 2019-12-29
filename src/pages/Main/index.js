@@ -4,6 +4,8 @@ import { FaPlus } from 'react-icons/fa';
 import { Modal } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
+import Input from '../../components/Input';
+import TagsInput from '../../components/TagsInput';
 import {
   Container,
   Form,
@@ -13,6 +15,8 @@ import {
   RemoveButton,
   CardDescription,
   CardTags,
+  ModalTitle,
+  SubmitButton,
 } from './styles';
 
 function getModalStyle() {
@@ -40,6 +44,11 @@ function Main() {
   const [modalStyle] = useState(getModalStyle);
   const [open, setOpen] = useState(false);
 
+  const [name, setName] = useState('');
+  const [link, setLink] = useState('');
+  const [description, setDescription] = useState('');
+  const [tags, setTags] = useState([]);
+
   function handleOpenModal(event) {
     event.preventDefault();
 
@@ -48,6 +57,10 @@ function Main() {
 
   function handleCloseModal() {
     setOpen(false);
+  }
+
+  function handleSubmit(event) {
+    event.preventDefault();
   }
 
   return (
@@ -59,8 +72,9 @@ function Main() {
         <Form>
           <div>
             <input type="text" placeholder="Search" />
+            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
             <label htmlFor="tags">
-              <input type="checkbox" id="tags" />
+              <input id="tags" type="checkbox" />
               search in tags only
             </label>
           </div>
@@ -93,9 +107,21 @@ function Main() {
         onClose={handleCloseModal}
       >
         <div style={modalStyle} className={classes.paper}>
-          <h2 id="modal-title">
+          <ModalTitle id="modal-title">
             <FaPlus color="#000" size={16} /> Add new tool
-          </h2>
+          </ModalTitle>
+
+          <form onSubmit={event => handleSubmit(event)}>
+            <Input label="Tool name" value={value => setName(value)} />
+            <Input label="Tool link" value={value => setLink(value)} />
+            <Input
+              textArea
+              label="Tool description"
+              value={value => setDescription(value)}
+            />
+            <TagsInput label="Tags" value={value => setTags(value)} />
+            <SubmitButton>Add tool</SubmitButton>
+          </form>
         </div>
       </Modal>
     </>
