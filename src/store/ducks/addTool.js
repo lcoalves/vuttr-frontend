@@ -25,7 +25,6 @@ export default function addTool(state = INITIAL_STATE, action) {
         ...state,
         error: false,
         loading: false,
-        data: action.payload.data,
       };
     case Types.FAILURE:
       return {
@@ -42,18 +41,17 @@ export default function addTool(state = INITIAL_STATE, action) {
  * Actions Creators
  */
 export const Creators = {
-  addToolRequest: (cep, index) => ({
+  addToolRequest: (title, link, description, tags) => ({
     type: Types.REQUEST,
     payload: {
-      cep,
-      index,
+      title,
+      link,
+      description,
+      tags,
     },
   }),
-  addToolSuccess: data => ({
+  addToolSuccess: () => ({
     type: Types.SUCCESS,
-    payload: {
-      data,
-    },
   }),
   addToolFailure: () => ({
     type: Types.FAILURE,

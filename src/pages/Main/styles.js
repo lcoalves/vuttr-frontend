@@ -124,9 +124,7 @@ export const CardTags = styled.span`
   margin-right: 10px;
 `;
 
-export const ModalTitle = styled.h2`
-  margin-left: 10px;
-`;
+export const ModalTitle = styled.h2``;
 
 export const SubmitButton = styled.button`
   background: #0dcb7d;

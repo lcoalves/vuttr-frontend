@@ -42,11 +42,10 @@ export default function tool(state = INITIAL_STATE, action) {
  * Actions Creators
  */
 export const Creators = {
-  toolRequest: (cep, index) => ({
+  toolRequest: tag => ({
     type: Types.REQUEST,
     payload: {
-      cep,
-      index,
+      tag,
     },
   }),
   toolSuccess: data => ({

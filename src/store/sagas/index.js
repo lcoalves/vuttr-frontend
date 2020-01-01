@@ -9,33 +9,36 @@ import {
 } from '../ducks/addTool';
 import { Creators as ToolActions, Types as ToolTypes } from '../ducks/tool';
 
-function* tool() {
+function* tool(action) {
   try {
-    yield call(api.get, '/tools');
+    const { tag } = action.payload;
 
-    yield put(ToolActions.signupSuccess());
+    const response = yield call(api.get, `/tools?tag=${tag}`);
+
+    yield put(ToolActions.toolSuccess(response.data.data));
   } catch (err) {
     toastr.error('Falha!', 'Houve um erro ao listar as ferramentas.');
-    yield put(ToolActions.signupFailure());
+    yield put(ToolActions.toolFailure());
   }
 }
 
 function* addTool(action) {
   try {
-    const { name, link, description, tags } = action.payload;
+    const { title, link, description, tags } = action.payload;
 
     yield call(api.post, '/tools', {
-      name,
+      title,
       link,
       description,
       tags,
     });
 
-    yield put(AddToolActions.signupSuccess());
+    yield put(AddToolActions.addToolSuccess());
     toastr.success('Success!', 'Tool has been created.');
+    window.location.reload();
   } catch (err) {
-    toastr.error('Fail!', 'Try create again.');
-    yield put(AddToolActions.signupFailure());
+    toastr.error('Fail!', 'Try again.');
+    yield put(AddToolActions.addToolFailure());
   }
 }
 

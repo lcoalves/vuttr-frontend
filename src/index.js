@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import ReduxToastr from 'react-redux-toastr';
+import 'react-redux-toastr/lib/css/react-redux-toastr.min.css';
 
 import './config/ReactotronConfig';
 import App from './App';

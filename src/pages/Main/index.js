@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaPlus } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Modal } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Input from '../../components/Input';
 import TagsInput from '../../components/TagsInput';
+import { Creators as AddToolActions } from '../../store/ducks/addTool';
+import { Creators as ToolActions } from '../../store/ducks/tool';
 import {
   Container,
   Form,
@@ -43,11 +46,17 @@ function Main() {
 
   const [modalStyle] = useState(getModalStyle);
   const [open, setOpen] = useState(false);
+  const [searchTag /* setSearchTag */] = useState('');
 
-  const [name, setName] = useState('');
+  const [title, setTitle] = useState('');
   const [link, setLink] = useState('');
   const [description, setDescription] = useState('');
   const [tags, setTags] = useState([]);
+
+  const dispatch = useDispatch();
+
+  // const loading = useSelector(state => state.tool.loading);
+  const tools = useSelector(state => state.tool.data);
 
   function handleOpenModal(event) {
     event.preventDefault();
@@ -61,7 +70,15 @@ function Main() {
 
   function handleSubmit(event) {
     event.preventDefault();
+
+    dispatch(AddToolActions.addToolRequest(title, link, description, tags));
+
+    setOpen(false);
   }
+
+  useEffect(() => {
+    dispatch(ToolActions.toolRequest(searchTag));
+  }, [dispatch, searchTag]);
 
   return (
     <>
@@ -83,22 +100,33 @@ function Main() {
           </AddButton>
         </Form>
 
-        <Card>
-          <div>
-            <CardTitle href="http://localhost:3000">Javascript</CardTitle>
-            <RemoveButton>
-              <FaPlus color="#F95E5A" size={14} /> remove
-            </RemoveButton>
-          </div>
-          <CardDescription>
-            JavaScript é uma linguagem de programação que permite implementar
-            funcionalidades mais complexas em páginas web.
-          </CardDescription>
-          <CardTags>#teste1</CardTags>
-          <CardTags>#teste2</CardTags>
-          <CardTags>#teste3</CardTags>
-          <CardTags>#teste4</CardTags>
-        </Card>
+        {tools && tools.length > 0 ? (
+          tools.map(tool => (
+            <Card key={tool.id}>
+              <div>
+                <CardTitle href={tool.link} target="_blank">
+                  {tool.title}
+                </CardTitle>
+                <RemoveButton>
+                  <FaPlus color="#F95E5A" size={14} /> remove
+                </RemoveButton>
+              </div>
+              <CardDescription>{tool.description}</CardDescription>
+              {tool.tags &&
+                tool.tags.length > 0 &&
+                tool.tags.map(tag => (
+                  <CardTags key={tag.id}>#{tag.name}</CardTags>
+                ))}
+            </Card>
+          ))
+        ) : (
+          <Card>
+            <div>
+              <CardTitle href="#">Nenhuma ferramenta cadastrada</CardTitle>
+            </div>
+            <CardDescription>Cadastre sua primeira ferramenta</CardDescription>
+          </Card>
+        )}
       </Container>
       <Modal
         aria-labelledby="modal-title"
@@ -112,7 +140,7 @@ function Main() {
           </ModalTitle>
 
           <form onSubmit={event => handleSubmit(event)}>
-            <Input label="Tool name" value={value => setName(value)} />
+            <Input label="Tool name" value={value => setTitle(value)} />
             <Input label="Tool link" value={value => setLink(value)} />
             <Input
               textArea
