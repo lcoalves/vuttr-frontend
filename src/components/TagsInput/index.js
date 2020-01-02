@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return */
+/* eslint-disable array-callback-return */
 /* eslint-disable react/prop-types */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
@@ -11,17 +13,18 @@ export default function TagsInput({ label, value }) {
 
   function addTags(event) {
     if (event.key === ',' && event.target.value !== '') {
-      setTags([
-        ...tags,
-        event.target.value.substring(0, event.target.value.length - 1),
-      ]);
-      value([...tags, event.target.value]);
+      setTags([...tags, event.target.value.replace(',', '')]);
+      value([...tags, event.target.value.replace(',', '')]);
       event.target.value = '';
     }
   }
 
   function removeTags(index) {
-    setTags([...tags.filter(tag => tags.indexOf(tag) !== index)]);
+    setTags([
+      ...tags.filter(tag => {
+        if (tags.indexOf(tag) !== index) return tag.replace(',', '');
+      }),
+    ]);
   }
 
   return (

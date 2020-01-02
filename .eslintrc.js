@@ -41,6 +41,7 @@ module.exports = {
     'import/prefer-default-export': 'off',
     'no-unused-expressions': ['error', { allowTaggedTemplates: true }],
     'no-param-reassign': 'off',
+    'no-shadow': 'off',
     'react-hooks/exhaustive-deps': 'off',
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',

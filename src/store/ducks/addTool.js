@@ -13,7 +13,6 @@ export const Types = {
 const INITIAL_STATE = {
   loading: false,
   error: false,
-  data: {},
 };
 
 export default function addTool(state = INITIAL_STATE, action) {

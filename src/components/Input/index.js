@@ -13,7 +13,11 @@ export default function Input({ label, textArea, placeholder, value }) {
       {label}
       <br />
       {textArea ? (
-        <textarea rows="7" onChange={event => handleChange(event)} />
+        <textarea
+          rows="7"
+          placeholder={placeholder}
+          onChange={event => handleChange(event)}
+        />
       ) : (
         <input
           type="text"

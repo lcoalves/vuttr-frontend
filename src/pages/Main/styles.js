@@ -1,3 +1,5 @@
+import * as RHighlighter from 'react-highlight-words';
+
 import styled from 'styled-components';
 
 export const Container = styled.div`
@@ -111,20 +113,33 @@ export const RemoveButton = styled.button`
 `;
 
 export const CardDescription = styled.p`
-  font-size: 16px;
   color: #ffffff99;
+  font-size: 16px;
   margin-top: 10px;
   margin-bottom: 20px;
 `;
 
-export const CardTags = styled.span`
-  color: #fff;
-  font-weight: bold;
-  font-size: 16px;
-  margin-right: 10px;
+export const CardHighlighter = styled(RHighlighter)`
+  /* color: #fff; */
+  /* font-weight: bold; */
+  /* font-size: 16px; */
+  /* margin-right: 10px; */
+  display: ${props => props.display};
+  color: ${props => props.color};
+  text-decoration: ${props => props.text_decoration};
+  font-weight: ${props => props.font_weight};
+  font-size: ${props => props.font_size};
+  margin: ${props => props.margin};
 `;
 
 export const ModalTitle = styled.h2``;
+
+export const ModalTagError = styled.p`
+  color: #f95e5a;
+  text-align: right;
+  font-size: 16px;
+  margin-top: 5px;
+`;
 
 export const SubmitButton = styled.button`
   background: #0dcb7d;

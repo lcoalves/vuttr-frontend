@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
+import { toastr } from 'react-redux-toastr';
 
 import { Modal } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -8,17 +9,19 @@ import { makeStyles } from '@material-ui/core/styles';
 import Input from '../../components/Input';
 import TagsInput from '../../components/TagsInput';
 import { Creators as AddToolActions } from '../../store/ducks/addTool';
+import { Creators as RemoveToolActions } from '../../store/ducks/removeTool';
 import { Creators as ToolActions } from '../../store/ducks/tool';
 import {
   Container,
   Form,
   AddButton,
+  RemoveButton,
   Card,
   CardTitle,
-  RemoveButton,
   CardDescription,
-  CardTags,
+  CardHighlighter,
   ModalTitle,
+  ModalTagError,
   SubmitButton,
 } from './styles';
 
@@ -46,7 +49,9 @@ function Main() {
 
   const [modalStyle] = useState(getModalStyle);
   const [open, setOpen] = useState(false);
-  const [searchTag /* setSearchTag */] = useState('');
+  const [checked, setChecked] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [tagsError, setTagsError] = useState(false);
 
   const [title, setTitle] = useState('');
   const [link, setLink] = useState('');
@@ -68,17 +73,55 @@ function Main() {
     setOpen(false);
   }
 
+  function handleRemoveTool(id) {
+    const toastrConfirmOptions = {
+      onOk: () => dispatch(RemoveToolActions.removeToolRequest(id)),
+      onCancel: () => {},
+    };
+    toastr.confirm(
+      'Are you sure you want to remove the tool?',
+      toastrConfirmOptions
+    );
+  }
+
+  function handleChange(event) {
+    event.preventDefault();
+
+    setSearchTerm(event.target.value);
+
+    dispatch(ToolActions.toolRequest(checked, event.target.value));
+  }
+
+  function handleCheck(event) {
+    event.preventDefault();
+
+    setChecked(!checked);
+
+    dispatch(ToolActions.toolRequest(event.target.value, searchTerm));
+  }
+
   function handleSubmit(event) {
     event.preventDefault();
 
-    dispatch(AddToolActions.addToolRequest(title, link, description, tags));
+    if (tags.length <= 0) {
+      setTagsError(true);
+    } else {
+      dispatch(AddToolActions.addToolRequest(title, link, description, tags));
 
-    setOpen(false);
+      setOpen(false);
+      setTagsError(true);
+    }
   }
 
   useEffect(() => {
-    dispatch(ToolActions.toolRequest(searchTag));
-  }, [dispatch, searchTag]);
+    if (tags.length > 0) {
+      setTagsError(false);
+    }
+  }, [tags.length]);
+
+  useEffect(() => {
+    dispatch(ToolActions.toolRequest(checked, searchTerm));
+  }, [checked, dispatch, searchTerm]);
 
   return (
     <>
@@ -88,10 +131,20 @@ function Main() {
 
         <Form>
           <div>
-            <input type="text" placeholder="Search" />
+            <input
+              type="text"
+              placeholder="Search"
+              onChange={event => handleChange(event)}
+            />
             {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
             <label htmlFor="tags">
-              <input id="tags" type="checkbox" />
+              <input
+                type="checkbox"
+                id="tags"
+                name="tags"
+                checked={checked}
+                onClick={event => handleCheck(event)}
+              />
               search in tags only
             </label>
           </div>
@@ -104,27 +157,60 @@ function Main() {
           tools.map(tool => (
             <Card key={tool.id}>
               <div>
-                <CardTitle href={tool.link} target="_blank">
+                <a href="/teste" target="_blank">
+                  <CardHighlighter
+                    activeIndex={-1}
+                    caseSensitive={false}
+                    searchWords={[searchTerm]}
+                    textToHighlight={tool.title}
+                    display="block"
+                    color="#fff"
+                    font_size="25px"
+                    text_decoration="underline"
+                  />
+                </a>
+                {/* <CardTitle href={tool.link} target="_blank">
                   {tool.title}
-                </CardTitle>
-                <RemoveButton>
+                </CardTitle> */}
+                <RemoveButton onClick={() => handleRemoveTool(tool.id)}>
                   <FaPlus color="#F95E5A" size={14} /> remove
                 </RemoveButton>
               </div>
-              <CardDescription>{tool.description}</CardDescription>
+              <CardHighlighter
+                activeIndex={-1}
+                caseSensitive={false}
+                searchWords={[searchTerm]}
+                textToHighlight={tool.description}
+                display="block"
+                color="#ffffff99"
+                font_size="16px"
+                margin="10px 0 20px 0"
+              />
               {tool.tags &&
                 tool.tags.length > 0 &&
                 tool.tags.map(tag => (
-                  <CardTags key={tag.id}>#{tag.name}</CardTags>
+                  <CardHighlighter
+                    key={tag.id}
+                    activeIndex={-1}
+                    caseSensitive={false}
+                    searchWords={[searchTerm]}
+                    textToHighlight={`#${tag.name}`}
+                    color="#fff"
+                    font_weight="bold"
+                    font_size="16px"
+                    margin="0 10px 0 0"
+                  />
                 ))}
             </Card>
           ))
         ) : (
           <Card>
             <div>
-              <CardTitle href="#">Nenhuma ferramenta cadastrada</CardTitle>
+              <CardTitle href="#">No tools registered</CardTitle>
             </div>
-            <CardDescription>Cadastre sua primeira ferramenta</CardDescription>
+            <CardDescription>
+              Register your first tool by clicking the add button
+            </CardDescription>
           </Card>
         )}
       </Container>
@@ -140,14 +226,24 @@ function Main() {
           </ModalTitle>
 
           <form onSubmit={event => handleSubmit(event)}>
-            <Input label="Tool name" value={value => setTitle(value)} />
-            <Input label="Tool link" value={value => setLink(value)} />
+            <Input
+              label="Tool name *"
+              placeholder="Ex: Javascript..."
+              value={value => setTitle(value)}
+            />
+            <Input
+              label="Tool link *"
+              placeholder="Ex: https://developer.mozilla.org/..."
+              value={value => setLink(value)}
+            />
             <Input
               textArea
-              label="Tool description"
+              label="Tool description *"
+              placeholder="JavaScript is a programming language that allows you to implement complex things on web..."
               value={value => setDescription(value)}
             />
-            <TagsInput label="Tags" value={value => setTags(value)} />
+            <TagsInput label="Tags *" value={value => setTags(value)} />
+            {tagsError && <ModalTagError>enter at least one tag</ModalTagError>}
             <SubmitButton>Add tool</SubmitButton>
           </form>
         </div>

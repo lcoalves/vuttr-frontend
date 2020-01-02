@@ -2,9 +2,9 @@
  * Action Types
  */
 export const Types = {
-  REQUEST: 'TOOL_REQUEST',
-  SUCCESS: 'TOOL_SUCCESS',
-  FAILURE: 'TOOL_FAILURE',
+  REQUEST: 'REMOVE_TOOL_REQUEST',
+  SUCCESS: 'REMOVE_TOOL_SUCCESS',
+  FAILURE: 'REMOVE_TOOL_FAILURE',
 };
 
 /**
@@ -13,10 +13,9 @@ export const Types = {
 const INITIAL_STATE = {
   loading: false,
   error: false,
-  data: {},
 };
 
-export default function tool(state = INITIAL_STATE, action) {
+export default function addTool(state = INITIAL_STATE, action) {
   switch (action.type) {
     case Types.REQUEST:
       return { ...state, loading: true };
@@ -25,7 +24,6 @@ export default function tool(state = INITIAL_STATE, action) {
         ...state,
         error: false,
         loading: false,
-        data: action.payload.data,
       };
     case Types.FAILURE:
       return {
@@ -42,20 +40,16 @@ export default function tool(state = INITIAL_STATE, action) {
  * Actions Creators
  */
 export const Creators = {
-  toolRequest: (searchTagsOnly, tag) => ({
+  removeToolRequest: id => ({
     type: Types.REQUEST,
     payload: {
-      searchTagsOnly,
-      tag,
+      id,
     },
   }),
-  toolSuccess: data => ({
+  removeToolSuccess: () => ({
     type: Types.SUCCESS,
-    payload: {
-      data,
-    },
   }),
-  toolFailure: () => ({
+  removeToolFailure: () => ({
     type: Types.FAILURE,
   }),
 };
