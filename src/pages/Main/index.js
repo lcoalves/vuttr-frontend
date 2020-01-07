@@ -157,7 +157,7 @@ function Main() {
           tools.map(tool => (
             <Card key={tool.id}>
               <div>
-                <a href="/teste" target="_blank">
+                <a href={tool.link} target="_blank" rel="noopener noreferrer">
                   <CardHighlighter
                     activeIndex={-1}
                     caseSensitive={false}

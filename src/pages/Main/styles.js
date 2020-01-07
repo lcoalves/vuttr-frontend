@@ -8,13 +8,19 @@ export const Container = styled.div`
   margin: 80px auto;
 
   h1 {
-    font-size: 40px;
+    text-align: left;
+    font: Semibold 42px/50px Source Sans Pro;
+    letter-spacing: 0.84px;
     color: #fff;
+    opacity: 1;
   }
 
   h2 {
-    font-size: 25px;
+    text-align: left;
+    font: Semibold 36px/40px Source Sans Pro;
+    letter-spacing: 0.72px;
     color: #fff;
+    opacity: 1;
   }
 `;
 

@@ -22,7 +22,7 @@ ReactDOM.render(
       closeOnToastrClick
       confirmOptions={{
         okText: 'Ok',
-        cancelText: 'Cancelar',
+        cancelText: 'Cancel',
       }}
     />
   </Provider>,
